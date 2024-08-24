@@ -7,3 +7,11 @@
   display: flex;
   justify-content: space-between;
 }
+
+.nav :global(.active) {
+  background-color: green;
+}
+
+:global(.test) {
+  background-color: red;
+}
