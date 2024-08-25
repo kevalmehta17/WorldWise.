@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 const BASE_URL = "http://localhost:4000";
 
 function App() {
-  const [cities, setCities] = useState({});
+  const [cities, setCities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -22,8 +22,8 @@ function App() {
         const data = await res.json();
         setCities(data);
       } catch (e) {
-        console.log("Error is:- ", e);
-        alert("there is some error to loading Data");
+        console.log("Error is:", e);
+        alert("There is some error loading data");
       } finally {
         setIsLoading(false);
       }
@@ -38,9 +38,15 @@ function App() {
         <Route path="product" element={<Product />} />
         <Route path="pricing" element={<Pricing />} />
         <Route path="app" element={<AppLayout />}>
-          <Route index element={<CityList />} />
-          <Route path="cities" element={<CityList />} />
-          <Route path="countries" element={<p>countries</p>} />
+          <Route
+            index
+            element={<CityList cities={cities} isLoading={isLoading} />}
+          />
+          <Route
+            path="cities"
+            element={<CityList cities={cities} isLoading={isLoading} />}
+          />
+          <Route path="countries" element={<p>Countries</p>} />
           <Route path="form" element={<p>Form</p>} />
         </Route>
         <Route path="login" element={<Login />} />
