@@ -7,6 +7,8 @@ import BackButton from "./BackButton";
 
 //PRE-BUILT CODE
 const flagemojiToPNG = (flag) => {
+  if (!flag) return null; // Return null or a placeholder image if flag is undefined
+
   var countryCode = Array.from(flag, (codeUnit) => codeUnit.codePointAt())
     .map((char) => String.fromCharCode(char - 127397).toLowerCase())
     .join("");
@@ -25,6 +27,7 @@ const formatDate = (date) =>
 function City() {
   const { id } = useParams();
   const { currentCity, getCity, isLoading } = useCities();
+  console.log(currentCity);
 
   useEffect(() => {
     getCity(id);
@@ -39,8 +42,11 @@ function City() {
   // };
 
   const { cityName, emoji, date, notes } = currentCity;
+  if (!cityName || !emoji) {
+    return <p>City data is missing</p>; // Show fallback message if data is not ready
+  }
   if (isLoading) return <Spinner />;
-
+  console.log("Data loaded, now displaying city details...");
   return (
     <div className={styles.city}>
       <div className={styles.row}>
