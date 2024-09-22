@@ -1,7 +1,7 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useSearchParams } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import styles from "./Map.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCities } from "../contexts/CitiesContext";
 
 //pre-build code
@@ -14,19 +14,22 @@ const flagemojiToPNG = (flag) => {
   );
 };
 function Map() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { cities } = useCities();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [mapPosition, setMapPosition] = useState([40, 0]);
 
   const mapLat = searchParams.get("lat");
   const mapLng = searchParams.get("lng");
 
+  useEffect(() => {
+    if (mapLat && mapLng) setMapPosition([mapLat, mapLng]);
+  }, [mapLat, mapLng]);
   return (
     <div className={styles.mapContainer}>
       <MapContainer
-        center={mapPosition}
-        zoom={13}
+        center={mapLat && mapLng ? [mapLat, mapLng] : mapPosition}
+        zoom={6}
         scrollWheelZoom={true}
         className={styles.map}
       >
@@ -45,9 +48,16 @@ function Map() {
             </Popup>
           </Marker>
         ))}
+        <ChangeCenter position={mapPosition} />
       </MapContainer>
     </div>
   );
+}
+
+function ChangeCenter({ position }) {
+  const map = useMap();
+  map.setView(position, 6);
+  return null;
 }
 
 export default Map;
